@@ -1,0 +1,16 @@
+{
+  "name": "moongose",
+  "version": "1.0.0",
+  "description": "",
+  "main": "serveer.js",
+  "scripts": {
+  "docker-mongo-up":"cd ./docker/mongodb && docker-compose up  -d && cd ../../",
+  "docker-mongo-down":"cd ./docker/mongodb && docker-compose down && cd ../../"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^3.5.9",
+    "mongoose": "^5.9.19"
+  }
+}

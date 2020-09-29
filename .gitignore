@@ -1,0 +1,12 @@
+/gitignore
+.env.development
+.env.production
+/log
+/logs
+/.next
+/build
+/node_modules
+/services/node_modules
+/services/*/node_modules
+/samples
+**/debug.log
