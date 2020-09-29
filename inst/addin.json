@@ -1,0 +1,4 @@
+[{
+"file":"./src/bin/express.js",
+"selector":"startServer",
+"replacemant":"\nconst authors = require('../routers/author'\nserver.use('/api', authors);\nconst stories = require('../routers/stories');\nserver.use('/api', stories);\nconst fans = require('../routers/fans');\nserver.use('/api', fans);\n"}]
