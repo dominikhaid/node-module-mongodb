@@ -38,6 +38,10 @@ This module is developed to extend our base server. It can be easily installed w
 There is some sample data under ./data it will be inserted on the request the api reseves.
 ```
 
+- ./src/config/mongo-config.json
+
+
+
 ## Routes
 
 ```
