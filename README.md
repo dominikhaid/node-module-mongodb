@@ -9,7 +9,7 @@ This module is developed to extend our base server. It can be easily installed w
 ### Module Features
 
 - Add support for mongodb
-- Add ready to use docker-compose for mongodb server and pgadmin4
+- Add ready to use docker-compose for mongodb server and mongo-express
 - Add sample data, functions and routes
 
 
