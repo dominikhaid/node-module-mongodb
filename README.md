@@ -1,71 +1,42 @@
-# Node.js mongoDB 2 REST with mongoose
+# MongoDB
 
-## Included Modules
+## Discription
 
-- Morgan Logger
-- Multer Upload Handler
-- Bodypaser
-- Jwt
-- Cors
-- Express
-- Next.js
-- mongoose
-- Helmet
-- .env
+---
 
-## Files And Folders
+This module is developed to extend our base server. It can be easily installed with the Plugin script from the base module. For detailed Information please see [@base-server](https://github.com/dominikhaid/node-base-server.git)
 
-- server-config.json -> CORS, HELMET, JWT and some other options
-- /public -> assets
-- /log -> morgan server logs
-- /src/bin -> basic server modules
-- /src/includes -> express middelware
-- /src/routes/ -> express routes
-- /src/pages/-> next.js pages
-- /src/pages/api -> next.js api routes
-- /data -> example data
-- /docker -> mongodb / mongo express
-- /config -> mongodb db setup
+### Module Features
 
-## Use
+- Add support for mongodb
+- Add ready to use docker-compose for mongodb server and pgadmin4
+- Add sample data, functions and routes
 
-1. npm install
-2. cd docker
-3. docker-compose up -d
-4. npm run dev
-5. visit http://localhost/api/
 
-```
-With default configuration you will get an express server serving some api routes from monogDB.
-You can customize this in diffrent ways like the following.
-```
+
+### Setup
+
+---
+
+> git clone https://github.com/dominikhaid/node-base-server.git my-app
+> 
+> cd my-app
+> 
+> npm run plguin p=https://github.com/dominikhaid/node-module-mongodb.git
+> 
+> npm run dev
+> 
+> visit http://localhost/api/
+
+**NOTE:**  all endpoinnts are documented in ./src/http
+
+
 
 ### Mongoosse
 
 ```
 There is some sample data under ./data it will be inserted on the request the api reseves.
 ```
-
-### Docker
-
-```
-The docker-compose file is pre configurated with pgAdmin4 and the latests monogoDB image.
-```
-
-### Server
-
-```
-You can just switch to Next.js by editing the server-config.json.
-Change "server": "express" to   "server": "next" eveything else is already setup.
-```
-
-### Scripts
-
-- npm run install
-- npm run start -> prod mode
-- npm run dev -> dev mode
-- npm run build -> next build
-- npm run format -> format files with prettier
 
 ## Routes
 
