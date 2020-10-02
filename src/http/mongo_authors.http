@@ -1,0 +1,122 @@
+@host=http://localhost/
+@api=api/mongo
+@jwt_tokken=Secret
+@search_user_id=5f735580e364f370a2c33f6b
+@search_title=Douglas Adams
+@search_name=MacKenzie Patel
+@search_email=adipiscing.elit.aliquam@donecegestasaliquam.com
+
+
+@new_author_name=New Author
+@new_author_age=78
+@new_fan_email=author3@example.de
+@new_fan_name=New Fan
+@new_story_title=New Story
+
+
+@update_author_name=Solomon Mcgowan22
+@update_new_author_name=Solomon Mcgowan
+@update_author_age=10
+@update_fan_email=author@example.de
+@update_new_fan_email=author2@example.de
+@update_fan_name=New Fan
+@update_story_title=New Story
+@update_new_story_title=New Story2
+
+
+
+
+
+//GET ALL USERS
+GET {{host}}{{api}}/authors HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{jwt_tokken}}
+//API ALL USERS
+###
+
+//GET USER ID
+GET {{host}}{{api}}/authors/{{search_user_id}} HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer {{jwt_tokken}}
+###
+GET {{host}}{{api}}/authors/?id={{search_user_id}} HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{jwt_tokken}}
+###
+GET {{host}}{{api}}/authors/ HTTP/1.1
+content-type: application/x-www-form-urlencoded
+Authorization: Bearer {{jwt_tokken}}
+
+id={{search_user_id}}
+###
+
+//GET USER BY EMAIL
+
+GET {{host}}{{api}}/authors/search/{{search_name}} HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer {{jwt_tokken}}
+###
+GET {{host}}{{api}}/authors/search/?name={{search_name}} HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{jwt_tokken}}
+###
+GET {{host}}{{api}}/authors/search HTTP/1.1
+content-type: application/x-www-form-urlencoded
+Authorization: Bearer {{jwt_tokken}}
+
+name={{search_name}}
+###
+
+//POST USER
+POST {{host}}{{api}}/authors HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer {{jwt_tokken}}
+
+author_name={{new_author_name}}
+&author_age={{new_author_age}}
+&fan_email={{new_fan_email}}
+&fan_name={{new_fan_name}}
+&story_title={{new_story_title}}
+###
+
+POST {{host}}{{api}}/authors/?author_name={{new_author_name}}&author_age={{new_author_age}}  HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{jwt_tokken}}
+
+###
+
+
+//DELETE USER
+DELETE {{host}}{{api}}/authors/{{new_author_name}} HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer {{jwt_tokken}}
+###
+DELETE {{host}}{{api}}/authors/?author_name={{new_author_name}} HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{jwt_tokken}}
+###
+DELETE {{host}}{{api}}/authors HTTP/1.1
+content-type: application/x-www-form-urlencoded
+Authorization: Bearer {{jwt_tokken}}
+
+author_name={{new_author_name}}
+###
+
+//UPDATE USER
+PATCH {{host}}{{api}}/authors/?author_name={{update_author_name}}&new_author_name={{update_new_author_name}}&author_age={{update_author_age}}&fan_email={{update_fan_email}}&new_fan_email={{update_new_fan_email}}&fan_name={{update_fan_name}}&story_title={{update_story_title}}&new_story_title={{update_new_story_title}} HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{jwt_tokken}}
+###
+PATCH {{host}}{{api}}/authors HTTP/1.1
+content-type: application/x-www-form-urlencoded
+Authorization: Bearer {{jwt_tokken}}
+
+author_name={{update_author_name}}
+&new_author_name={{update_new_author_name}}
+&author_age={{update_author_age}}
+&fan_email={{update_fan_email}}
+&new_fan_email={{update_new_fan_email}}
+&fan_name={{update_fan_name}}
+&story_title={{update_story_title}}
+&new_story_title={{update_new_story_title}}
+###
