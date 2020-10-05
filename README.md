@@ -22,7 +22,7 @@ with the Plugin script from the base module. For detailed Information please see
 >
 > cd my-app
 >
-> npm run plguin p=https://github.com/dominikhaid/node-module-mongodb.git
+> npm run plugin p=https://github.com/dominikhaid/node-module-mongodb.git
 >
 > npm run dev
 >
