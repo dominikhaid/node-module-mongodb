@@ -1,36 +1,36 @@
-const mongoose = require("mongoose");
-const utils = require("../functions/utils");
+const mongoose = require('mongoose');
+const utils = require('../functions/utils');
 
 /**
  * READ CONNECTION OTIONS FROM ./contig/CONFIG.JSON
  */
 const options = {
-	useNewUrlParser: true,
-	useCreateIndex: true,
-	autoIndex: true, //this is the code I added that solved it all
-	keepAlive: true,
-	poolSize: 10,
-	bufferMaxEntries: 0,
-	connectTimeoutMS: 10000,
-	socketTimeoutMS: 45000,
-	family: 4, // Use IPv4, skip trying IPv6
-	useFindAndModify: false,
-	useUnifiedTopology: true,
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  autoIndex: true, //this is the code I added that solved it all
+  keepAlive: true,
+  poolSize: 10,
+  bufferMaxEntries: 0,
+  connectTimeoutMS: 10000,
+  socketTimeoutMS: 45000,
+  family: 4, // Use IPv4, skip trying IPv6
+  useFindAndModify: false,
+  useUnifiedTopology: true,
 };
 
 let configDb;
 try {
-	configDb = require("../../../config/mongo-config.json");
+  configDb = require('../../../config/mongo-config.json');
 } catch (error) {
-	console.log(error);
+  console.log(error);
 }
 
-if (process.env.NODE_ENV === "development") {
-	configDb = configDb.development;
-} else if (process.env.NODE_ENV === "production") {
-	configDb = configDb.production;
+if (process.env.NODE_ENV === 'development') {
+  configDb = configDb.development;
+} else if (process.env.NODE_ENV === 'production') {
+  configDb = configDb.production;
 } else {
-	configDb = configDb.test;
+  configDb = configDb.test;
 }
 
 /**
@@ -38,211 +38,181 @@ if (process.env.NODE_ENV === "development") {
  */
 
 module.exports = function connectionFactory() {
-	const con = mongoose.createConnection(configDb.host, options);
+  const con = mongoose.createConnection(configDb.host, options);
 
-	con.model("Story", require("../schemas/schemas").stories);
-	con.model("Person", require("../schemas/schemas").people);
-	con.model("Fan", require("../schemas/schemas").fans);
+  const Stroy = con.model('Story', require('../schemas/schemas').stories);
+  const Person = con.model('Person', require('../schemas/schemas').people);
+  const Fan = con.model('Fan', require('../schemas/schemas').fans);
 
-	con.on("error", (error) => {
-		console.error.bind(console, "connection error:");
-		con.close();
-		return error;
-	});
+  con.on('error', error => {
+    console.error.bind(console, 'connection error:');
+    con.close();
+    console.log(error);
+    return error;
+  });
 
-	con.once("open", function () {
-		console.info(`
+  con.once('open', function () {
+    console.info(`
 				_________________
 
 				MongoDB Connected
 				_________________`);
 
-		async function initCollections() {
-			let collections = await utils.findCollections(con.db);
-			console.info(`
+    async function initCollections() {
+      let collections = await utils
+        .findCollections(con.db)
+        .then(coll => {
+          console.info(`
 				_________________
 
 				CHECK COLLECTIONS
 				_________________`);
+          return coll;
+        })
+        .catch(err => {
+          return err;
+        });
 
-			let fans = collections.findIndex((el) => el.name === "fans");
-			if (fans === -1) {
-				utils.createCollection(con.db, "fans");
-				console.info(`
-				______________________
+      if (!collections[0] || typeof collections[0] !== 'object')
+        collections.push({name: 'fans', items: 0});
+      if (!collections[1] || typeof collections[1] !== 'object')
+        collections.push({name: 'persons', items: 0});
+      if (!collections[2] || typeof collections[2] !== 'object')
+        collections.push({name: 'story', items: 0});
 
-				CREATED FAN COLLECTION
-				______________________`);
-			}
-			let stroys = collections.findIndex((el) => el.name === "stories");
-			if (stroys === -1) {
-				utils.createCollection(con.db, "stories");
-				console.info(`
-				__________________________
+      if (!collections[1].items)
+        collections[1].items = await Person.estimatedDocumentCount();
 
-				CREATED STORIES COLLECTION
-				__________________________`);
-			}
+      if (!collections[2].items)
+        collections[2].items = await Stroy.estimatedDocumentCount();
 
-			let people = collections.findIndex((el) => el.name === "people");
-			if (people === -1) {
-				console.info(`
-				_________________________
+      if (!collections[0].items)
+        collections[0].items = await Fan.estimatedDocumentCount();
 
-				CREATED PEOPLE COLLECTION
-				_________________________`);
-				utils.createCollection(con.db, "people");
-
-
-			}
-		}
-				async function insertData() {
-					let data = {
-					person: {},
-					fan: {},
-					stories: {},
-				};
-
-				try {
-					data.fan = require("../../../data/mongoose-fans.json");
-				} catch (error) {
-					console.log(error);
-				}
-
-				try {
-					data.stories = require("../../../data/mongoose-stories.json");
-				} catch (error) {
-					console.log(error);
-				}
-
-				try {
-					data.person = require("../../../data/mongoose-author.json");
-				} catch (error) {
-					console.log(error);
-				}
-
-
-					data.fan.forEach((element, index) => {
-						let fanId = mongoose.Types.ObjectId();
-						let personId = mongoose.Types.ObjectId();
-						let storiesId = mongoose.Types.ObjectId();
-
-						data.fan[index]._id = fanId;
-						data.stories[index]._id = storiesId;
-						data.person[index]._id = personId;
-
-						data.fan[index].stories = [storiesId];
-						data.fan[index].author = [personId];
-
-						data.stories[index].stories = [storiesId];
-						data.stories[index].author = personId;
-
-						data.person[index].fans = [fanId];
-						data.person[index].stories = [storiesId];
-					});
-
-					let erg = await con.models.Person.insertMany(data.person);
-					erg = await con.models.Fan.insertMany(data.fan);
-					erg = await con.models.Story.insertMany(data.stories);
-
-					console.info(`
+      console.info(`
 				_________________
 
-				  Data inserted
+				Authors: ${collections[1].items}
+				Fans: ${collections[0].items}
+				Stories: ${collections[2].items}
 				_________________`);
-				}
 
+      return collections;
+    }
 
-		initCollections().then(e => insertData());
-	});
+    async function insertData(collections) {
+      if (!collections[0].items > 0) {
+        try {
+          collections[0].data = require('../../../data/mongoose-fans.json');
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      if (!collections[2].items > 0) {
+        try {
+          collections[2].data = require('../../../data/mongoose-stories.json');
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      if (!collections[1].items > 0) {
+        try {
+          collections[1].data = require('../../../data/mongoose-author.json');
+        } catch (error) {
+          console.log(error);
+        }
+      }
 
-	con.on("close", (msg) => {
-		console.info.bind(console, "connection info:");
-		console.info(`
+      let maxCount = [];
+      collections.forEach(items => {
+        if (items.data > maxCount) maxCount = items.data;
+      });
+
+      maxCount.forEach((element, index) => {
+        let fanId = mongoose.Types.ObjectId();
+        let personId = mongoose.Types.ObjectId();
+        let storiesId = mongoose.Types.ObjectId();
+
+        if (collections[2].data && collections[2].data[index]) {
+          collections[2].data[index]._id = storiesId;
+          collections[2].data[index].stories = [storiesId];
+          collections[2].data[index].author = personId;
+        }
+
+        if (collections[0].data && collections[0].data[index]) {
+          collections[0].data[index]._id = fanId;
+          collections[0].data[index].stories = [storiesId];
+          collections[0].data[index].author = [personId];
+        }
+
+        if (collections[1].data && collections[1].data[index]) {
+          collections[1].data[index]._id = personId;
+          collections[1].data[index].fans = [fanId];
+          collections[1].data[index].stories = [storiesId];
+        }
+      });
+
+      if (collections[1].data) {
+        await con.models.Person.insertMany(collections[1].data)
+          .then(() => {
+            console.info(`
+				_________________________
+				INSERTED PEOPLE
+				DOCUMENTS: ${collections[1].data.length}
+				_________________________`);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+
+      if (collections[0].data) {
+        await con.models.Fan.insertMany(collections[0].data)
+          .then(() => {
+            console.info(`
+				_________________________
+				INSERTED FANS
+				DOCUMENTS: ${collections[0].data.length}
+				_________________________`);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+      if (collections[1].data) {
+        await con.models.Story.insertMany(collections[2].data)
+          .then(() => {
+            console.info(`
+				_________________________
+				INSERTED STORIES
+				DOCUMENTS: ${collections[2].data.length}
+				_________________________`);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    }
+
+    initCollections().then(collections => {
+      if (
+        collections[0].items > 0 &&
+        collections[1].items > 0 &&
+        collections[2].items > 0
+      )
+        return true;
+      insertData(collections);
+    });
+  });
+
+  con.on('close', msg => {
+    console.info.bind(console, 'connection info:');
+    console.info(`
 				_________________
 
 				  Disconnected
 				_________________`);
-	});
+  });
 
-	return con;
+  return con;
 };
-
-// const	con = mongoose.createConnection(configDb.host, options)
-
-// con.on("error", error => {
-// 	console.error.bind(console, "connection error:")
-// 	console.log(error)
-// 	con.close()
-// 	return error
-// });
-
-// con.once("open", function () {
-// 	console.info(`
-// 		_________________
-
-// 		MongoDB Connected
-// 		_________________`)
-
-// 	async function initCollections() {
-// 		let collections = await utils.findCollections(con.db);
-// 		console.info(`
-// 		_________________
-
-// 		CHECK COLLECTIONS
-// 		_________________`)
-
-// 		let fans = collections.findIndex((el) => el.name === "fans");
-// 		if (fans === -1) {
-// 			utils.createCollection(con.db, "fans");
-// 			console.info(`
-// 		______________________
-
-// 		CREATED FAN COLLECTION
-// 		______________________`)
-// 		}
-// 		let stroys = collections.findIndex((el) => el.name === "stories");
-// 		if (stroys === -1) {
-// 			utils.createCollection(con.db, "stories");
-// 			console.info(`
-// 		__________________________
-
-// 		CREATED STORIES COLLECTION
-// 		__________________________`)
-// 		}
-
-// 		let people = collections.findIndex((el) => el.name === "people");
-// 		if (people === -1) {
-// 			console.info(`
-// 		_________________________
-
-// 		CREATED PEOPLE COOLECTION
-// 		_________________________`)
-// 			utils.createCollection(con.db, "people");
-// 		}
-// 	}
-
-// 	initCollections()
-
-// 	// let data = {
-// 	// 	person: { _id: new mongoose.Types.ObjectId(), name: "lol", age: 10 },
-// 	// 	story: { _id: new mongoose.Types.ObjectId(), title: "LOL STORY" },
-// 	// 	fan: {
-// 	// 		_id: new mongoose.Types.ObjectId(),
-// 	// 		name: "LOL STORY",
-// 	// 		email: "LOL@LOL.lol",
-// 	// 	},
-// 	// };
-
-// });
-
-// module.exports.con = con
-
-// const Stroy =  con.model("Story", require("../schemas/schemas").stories);
-// module.exports.Story = Stroy
-
-// const Person = con.model("Person", require("../schemas/schemas").people);
-// module.exports.Person = Person
-
-// const Fan = con.model("Fan", require("../schemas/schemas").fans);
-// module.exports.Fan = Fan
