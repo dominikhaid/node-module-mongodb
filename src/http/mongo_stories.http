@@ -1,7 +1,7 @@
 @host=http://localhost/
 @api=api/mongo
 @jwt_tokken=Secret
-@search_user_id=5f735580e364f370a2c33f66
+@search_user_id=5f7a1183d2441b05176776d8
 @search_title=Douglas Adams
 @search_name=MacKenzie Patel
 @search_email=adipiscing.elit.aliquam@donecegestasaliquam.com
@@ -20,8 +20,8 @@
 @update_fan_email=author@example.de
 @update_new_fan_email=author2@example.de
 @update_fan_name=New Fan
-@update_story_title=New Story
-@update_new_story_title=New2 Story2
+@update_story_title=Douglas Adams
+@update_new_story_title=Douglas Adams
 
 
 //GET ALL USERS

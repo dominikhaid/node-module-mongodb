@@ -8,8 +8,9 @@ export default (req, res) => {
       auth()
         .then(con => {
           usersQuery.findOne(con, req).then(erg => {
-            con.close();
-            checkReqErrors({msg: 'Found Users', result: erg}, res);
+            // con.close();
+
+            checkReqErrors(erg, res);
           });
         })
         .catch(err => {
@@ -19,7 +20,7 @@ export default (req, res) => {
       auth()
         .then(con => {
           usersQuery.deleteOne(con, req).then(erg => {
-            con.close();
+            // con.close();
             checkReqErrors(erg, res);
           });
         })
@@ -40,7 +41,7 @@ export default (req, res) => {
       auth()
         .then(con => {
           usersQuery.updateOne(con, req).then(erg => {
-            con.close();
+            // con.close();
             checkReqErrors(erg, res);
           });
         })
@@ -53,8 +54,8 @@ export default (req, res) => {
       auth()
         .then(con => {
           usersQuery.find(con, req).then(erg => {
-            con.close();
-            checkReqErrors({msg: 'Authors Users', result: erg}, res);
+            // con.close();
+            checkReqErrors(erg, res);
           });
         })
         .catch(err => {

@@ -1,7 +1,7 @@
 @host=http://localhost/
 @api=api/mongo
 @jwt_tokken=Secret
-@search_user_id=5f735580e364f370a2c33f64
+@search_user_id=5f7a1183d2441b05176776d7
 @search_title=Douglas Adams
 @search_name=MacKenzie Patel
 @search_email=adipiscing.elit.aliquam@donecegestasaliquam.com
@@ -17,9 +17,9 @@
 @update_author_name=Solomon Mcgowan22
 @update_new_author_name=Solomon Mcgowan
 @update_author_age=10
-@update_fan_email=author@example.de
-@update_new_fan_email=Newauthor@example.de
-@update_fan_name=New Fan
+@update_fan_email=hendrerit@loremluctusut.org
+@update_new_fan_email=hendrerit@loremluctusut.org
+@update_fan_name=Rebekah Mueller Updated
 @update_story_title=New Story
 @update_new_story_title=New Story2
 

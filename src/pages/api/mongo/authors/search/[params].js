@@ -7,8 +7,8 @@ export default (req, res) => {
     auth()
       .then(con => {
         usersQuery.searchOne(con, req).then(erg => {
-          con.close();
-          checkReqErrors({msg: 'Found Users', result: erg}, res);
+          // con.close();
+          checkReqErrors(erg, res);
         });
       })
       .catch(err => {
