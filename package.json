@@ -12,5 +12,8 @@
   "dependencies": {
     "mongodb": "^3.5.9",
     "mongoose": "^5.9.19"
+  },  "devDependencies": {
+    "prettier": "^2.0.5",
+    "prettier-eslint-cli": "^5.0.0"
   }
 }
