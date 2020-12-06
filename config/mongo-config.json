@@ -1,5 +1,5 @@
 {
-	"development": {
+  "development": {
     "host": "mongodb://myUser:myPassword@localhost:27501/public"
   },
   "test": {
@@ -9,4 +9,3 @@
     "host": "mongodb://myUser:myPassword@localhost:27501/public"
   }
 }
-
